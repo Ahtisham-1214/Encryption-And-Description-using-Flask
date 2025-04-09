@@ -40,7 +40,7 @@ file_path = tk.StringVar()
 file_entry = ttk.Entry(file_frame, textvariable=file_path, width=50)
 file_entry.grid(row=1, column=0, padx=(0, 5), sticky="ew")
 
-browse_btn = ttk.Button(file_frame, text="Browse")
+browse_btn = ttk.Button(file_frame, text="Browse" , command=lambda: browse_file())
 browse_btn.grid(row=1, column=1, sticky="e")
 
 # Key Section
@@ -80,5 +80,15 @@ cancel_btn.pack(side=tk.LEFT)
 main_frame.columnconfigure(0, weight=1)
 file_frame.columnconfigure(0, weight=1)
 key_frame.columnconfigure(0, weight=1)
+
+
+def browse_file():
+    path = filedialog.askopenfilename()
+    if path:
+        file_path.set(path)
+        log_text.insert(tk.END, "File selected: " + path + "\n")
+        log_text.see(tk.END)
+
+
 
 root.mainloop()
