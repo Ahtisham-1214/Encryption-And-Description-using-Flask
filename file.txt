@@ -1,0 +1,3 @@
+This is a sample text file.
+You can write any content here.
+Feel free to modify or add more text as needed.
