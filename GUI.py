@@ -70,16 +70,42 @@ log_text.pack(fill=tk.BOTH, expand=True)
 action_frame = ttk.Frame(main_frame)
 action_frame.grid(row=4, column=0, columnspan=2, sticky="e", pady=(10, 0))
 
-process_btn = ttk.Button(action_frame, text="Process File")
+
+def process_file():
+    selected_operation = operation.get()
+    selected_file = file_path.get()
+    decryption_key = user_key.get()
+
+    if not selected_file:
+        messagebox.showerror("Error", "Please select a file.")
+        return
+
+    if selected_operation == "encrypt":
+        # Placeholder for encryption logic
+        log_text.insert(tk.END, "Encrypting file: " + selected_file + "\n")
+        log_text.see(tk.END)
+    elif selected_operation == "decrypt":
+        if not decryption_key:
+            messagebox.showerror("Error", "Please enter the decryption key.")
+            return
+        # Placeholder for decryption logic
+        log_text.insert(tk.END, "Decrypting file: " + selected_file + "\n")
+        log_text.see(tk.END)
+
+
+
+process_btn = ttk.Button(action_frame, text="Process File", command=process_file)
 process_btn.pack(side=tk.LEFT, padx=5)
 
-cancel_btn = ttk.Button(action_frame, text="Exit", command=root.quit)
-cancel_btn.pack(side=tk.LEFT)
+exit_btn = ttk.Button(action_frame, text="Exit", command=root.quit)
+exit_btn.pack(side=tk.LEFT)
 
 # Configure grid weights
 main_frame.columnconfigure(0, weight=1)
 file_frame.columnconfigure(0, weight=1)
 key_frame.columnconfigure(0, weight=1)
+
+
 
 
 def browse_file():
