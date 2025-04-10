@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, scrolledtext
+from backend import encrypt, decrypt
 
 root = tk.Tk()
 root.title("SecureFile Encryptor")
@@ -49,7 +50,7 @@ key_frame.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(0, 10))
 
 key_label = ttk.Label(key_frame, text="Generated Key:")
 key_entry = ttk.Entry(key_frame, state="readonly", width=50)
-copy_btn = ttk.Button(key_frame, text="Copy")
+copy_btn = ttk.Button(key_frame, text="Copy", command=lambda: copy_key())
 
 key_label.grid(row=0, column=0, sticky="w")
 key_entry.grid(row=1, column=0, padx=(0, 5), sticky="ew")
@@ -71,33 +72,13 @@ action_frame = ttk.Frame(main_frame)
 action_frame.grid(row=4, column=0, columnspan=2, sticky="e", pady=(10, 0))
 
 
-def process_file():
-    selected_operation = operation.get()
-    selected_file = file_path.get()
-    decryption_key = user_key.get()
-
-    if not selected_file:
-        messagebox.showerror("Error", "Please select a file.")
-        return
-
-    if selected_operation == "encrypt":
-        # Placeholder for encryption logic
-        log_text.insert(tk.END, "Encrypting file: " + selected_file + "\n")
-        log_text.see(tk.END)
-    elif selected_operation == "decrypt":
-        if not decryption_key:
-            messagebox.showerror("Error", "Please enter the decryption key.")
-            return
-        # Placeholder for decryption logic
-        log_text.insert(tk.END, "Decrypting file: " + selected_file + "\n")
-        log_text.see(tk.END)
 
 
 
-process_btn = ttk.Button(action_frame, text="Process File", command=process_file)
+process_btn = ttk.Button(action_frame, text="Process File", command= lambda: process_file())
 process_btn.pack(side=tk.LEFT, padx=5)
 
-exit_btn = ttk.Button(action_frame, text="Exit", command=root.quit)
+exit_btn = ttk.Button(action_frame, text="Exit", command=lambda: exit())
 exit_btn.pack(side=tk.LEFT)
 
 # Configure grid weights
@@ -108,6 +89,40 @@ key_frame.columnconfigure(0, weight=1)
 
 
 
+def process_file():
+    selected_operation = operation.get()
+    selected_file = file_path.get()
+    decryption_key = user_key.get()
+
+    if not selected_file:
+        messagebox.showerror("Error", "Please select a file.")
+        return
+
+    if selected_operation == "encrypt":
+        log_text.insert(tk.END, "Encrypting file: " + selected_file + "\n")
+        log_text.see(tk.END)
+        has_encrypted, key = encrypt(selected_file)
+        if has_encrypted:
+            key_entry.config(state="normal")
+            key_entry.delete(0, tk.END)
+            key_entry.insert(0, str(key))
+            key_entry.config(state="readonly")
+            messagebox.showinfo("Success", "File encrypted successfully.")
+        else:
+            messagebox.showerror("Error", "Failed to encrypt the file.")
+    elif selected_operation == "decrypt":
+        if not decryption_key:
+            messagebox.showerror("Error", "Please enter the decryption key.")
+            return
+        else:
+            key = int(decryption_key)
+            if decrypt(selected_file, key):
+                messagebox.showinfo("Success", "File decrypted successfully.")
+        # Placeholder for decryption logic
+                log_text.insert(tk.END, "Decrypting file: " + selected_file + "\n")
+                log_text.see(tk.END)
+
+
 def browse_file():
     path = filedialog.askopenfilename()
     if path:
@@ -115,6 +130,25 @@ def browse_file():
         log_text.insert(tk.END, "File selected: " + path + "\n")
         log_text.see(tk.END)
 
+def copy_key():
+    key = key_entry.get()
+    if key:
+        root.clipboard_clear()
+        root.clipboard_append(key)
+        messagebox.showinfo("Key Copied", "Encryption key copied to clipboard.")
+        key_entry.config(state="normal")
+        key_entry.delete(0, tk.END)
+        key_entry.config(state="readonly")
+    else:
+        messagebox.showerror("Error", "No key to copy. Please encrypt a file first.")
 
+def exit():
+    if not file_entry.get() == "":
+        if messagebox.askyesno("Exit", "The file is selected. Closing the app may incorrupt the file") == True:
+            root.quit()
+        else:
+            pass
+    else:
+        root.quit()
 
 root.mainloop()
