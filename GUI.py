@@ -101,26 +101,31 @@ def process_file():
     if selected_operation == "encrypt":
         log_text.insert(tk.END, "Encrypting file: " + selected_file + "\n")
         log_text.see(tk.END)
-        has_encrypted, key = encrypt(selected_file)
+        has_encrypted, result = encrypt(selected_file)
         if has_encrypted:
             key_entry.config(state="normal")
             key_entry.delete(0, tk.END)
-            key_entry.insert(0, str(key))
+            key_entry.insert(0, str(result))  # Display the generated key
             key_entry.config(state="readonly")
             messagebox.showinfo("Success", "File encrypted successfully.")
         else:
-            messagebox.showerror("Error", "Failed to encrypt the file.")
+            messagebox.showerror("Error", result)  # Show the error message from the backend
     elif selected_operation == "decrypt":
         if not decryption_key:
             messagebox.showerror("Error", "Please enter the decryption key.")
             return
         else:
-            key = int(decryption_key)
-            if decrypt(selected_file, key):
-                messagebox.showinfo("Success", "File decrypted successfully.")
-        # Placeholder for decryption logic
+            try:
+                key = int(decryption_key)
                 log_text.insert(tk.END, "Decrypting file: " + selected_file + "\n")
                 log_text.see(tk.END)
+                has_decrypted, result = decrypt(selected_file, key)
+                if has_decrypted:
+                    messagebox.showinfo("Success", result)
+                else:
+                    messagebox.showerror("Error", result)
+            except ValueError:
+                messagebox.showerror("Error", "Invalid decryption key. Please enter a numeric key.")
 
 
 def browse_file():
