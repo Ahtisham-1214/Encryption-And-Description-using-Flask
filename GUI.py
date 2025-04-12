@@ -74,9 +74,12 @@ action_frame.grid(row=4, column=0, columnspan=2, sticky="e", pady=(10, 0))
 
 
 
+view_log_btn = ttk.Button(action_frame, text= "View Log", command=lambda: view_log())
+view_log_btn.pack(side=tk.LEFT, padx=5)
 
 process_btn = ttk.Button(action_frame, text="Process File", command= lambda: process_file())
 process_btn.pack(side=tk.LEFT, padx=5)
+
 
 exit_btn = ttk.Button(action_frame, text="Exit", command=lambda: exit())
 exit_btn.pack(side=tk.LEFT)
@@ -156,4 +159,9 @@ def exit():
     else:
         root.quit()
 
+def view_log():
+    with open("log_file.txt", "r") as file:
+        log_content = file.read()
+        log_text.delete(1.0, tk.END)  # Clear the current log text
+        log_text.insert(tk.END, log_content)
 root.mainloop()

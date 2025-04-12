@@ -1,3 +1,0 @@
-This is a sample text file.
-You can use this file to store any text data.
-Feel free to modify or add content as needed.

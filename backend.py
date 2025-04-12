@@ -3,7 +3,7 @@ import os
 import datetime
 
 def encrypt(file_path):
-    key = random.randint(1, 100)
+    key = random.randint(1000, 100000) # Generate a random key
     file_extension = os.path.splitext(file_path)[1].lower()
 
     if file_extension in [".txt", ".htm", ".html", ".py", ".csv", ".json"]:
@@ -16,7 +16,7 @@ def encrypt(file_path):
                 for char in text
             )
         with open(file_path, 'w', encoding='utf-8', errors='ignore') as file:
-            file.write(f"ENCRYPTED:{key}:{text}")  # Add marker with key
+            file.write(f"ENCRYPTED:{key}:{text}")  # append the key and marker to the encrypted text
             log(file_path, "Encrypted")
         return True, key
 
@@ -31,7 +31,7 @@ def decrypt(file_path, key):
             text = file.read()
             if not text.startswith("ENCRYPTED:"):  # Check if not encrypted
                 return False, "File is not encrypted."
-            
+   
             # Extract the key and encrypted text
             try:
                 marker, stored_key, encrypted_text = text.split(":", 2)
@@ -57,6 +57,6 @@ def decrypt(file_path, key):
 
 def log(file_path, status):
     with open("log_file.txt", "a") as log_file:
-        log_file.write(f"File processed: {file_path}\t")
-        log_file.write(f"Timestamp: {datetime.datetime.now()}\t")
-        log_file.write(f"Status: {status}\n")
+        log_file.write(f"{file_path}\t\t")
+        log_file.write(f"{datetime.datetime.now()}\t\t")
+        log_file.write(f"{status}\n")
